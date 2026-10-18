@@ -49,7 +49,7 @@ function startClock() {
 
 // Event Listeners setup
 function setupEventListeners() {
-    // Add Task Handler
+    // Add Task Handler (using correct top-level element references)
     if (taskForm && taskTitleInput && taskCategorySelect && taskPrioritySelect) {
         taskForm.addEventListener('submit', (e) => {
             e.preventDefault();
@@ -70,11 +70,12 @@ function setupEventListeners() {
         });
     }
 
-    // Step Tracker Goal Toggles
-    if (editGoalBtn && goalContainer && goalInput) {
-        editGoalBtn.addEventListener('click', () => {
+    // Step Tracker Goal Toggles & Saving
+    const setGoalBtn = document.getElementById('set-goal-btn');
+    if (setGoalBtn && goalContainer && goalInput) {
+        setGoalBtn.addEventListener('click', () => {
             goalContainer.classList.toggle('hidden');
-            if(!goalContainer.classList.contains('hidden')) {
+            if (!goalContainer.classList.contains('hidden')) {
                 goalContainer.classList.add('flex');
                 goalInput.value = maxSteps;
                 goalInput.focus();
@@ -90,7 +91,11 @@ function setupEventListeners() {
             if (!isNaN(newGoal) && newGoal > 0) {
                 maxSteps = newGoal;
                 localStorage.setItem('tracker_max_steps', maxSteps);
-                updateStepTracker();
+                
+                if (typeof updateStepTracker === 'function') {
+                    updateStepTracker();
+                }
+                
                 goalContainer.classList.add('hidden');
                 goalContainer.classList.remove('flex');
             }
@@ -106,7 +111,9 @@ function setupEventListeners() {
             currentSteps += stepsVal;
             localStorage.setItem('tracker_steps', currentSteps);
             stepInput.value = '';
-            updateStepTracker();
+            if (typeof updateStepTracker === 'function') {
+                updateStepTracker();
+            }
         });
     }
 
@@ -123,10 +130,11 @@ function setupEventListeners() {
     }
 
     // Filter Buttons Handlers
-    if (filterButtons && filterButtons.length > 0) {
-        filterButtons.forEach(btn => {
+    const filterButtonsList = document.querySelectorAll('.filter-btn');
+    if (filterButtonsList && filterButtonsList.length > 0) {
+        filterButtonsList.forEach(btn => {
             btn.addEventListener('click', () => {
-                filterButtons.forEach(b => {
+                filterButtonsList.forEach(b => {
                     b.classList.remove('bg-indigo-600', 'text-white');
                     b.classList.add('bg-slate-800', 'text-slate-300');
                 });
@@ -134,11 +142,14 @@ function setupEventListeners() {
                 btn.classList.add('bg-indigo-600', 'text-white');
 
                 currentFilter = btn.getAttribute('data-filter');
-                renderTasks();
+                if (typeof renderTasks === 'function') {
+                    renderTasks();
+                }
             });
         });
     }
 }
+
 // Global actions exposed for inline HTML event handlers
 window.toggleTask = function(id) {
     tasks = tasks.map(task => task.id === id ? { ...task, completed: !task.completed } : task);
