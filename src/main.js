@@ -80,15 +80,7 @@ editGoalBtn.addEventListener('click', () => {
         goalContainer.classList.remove('flex');
     }
 });
-// Reset Step Tracker
-const resetStepsBtn = document.getElementById('reset-steps-btn');
-if (resetStepsBtn) {
-    resetStepsBtn.addEventListener('click', () => {
-        currentSteps = 0;
-        localStorage.setItem('currentSteps', currentSteps);
-        updateStepTrackerUI();
-    });
-}
+
 
 saveGoalBtn.addEventListener('click', () => {
     const newGoal = parseInt(goalInput.value);
@@ -111,6 +103,15 @@ saveGoalBtn.addEventListener('click', () => {
         stepInput.value = '';
         updateStepTracker();
     });
+    // Reset Step Tracker Handler
+const resetStepsBtn = document.getElementById('reset-steps-btn');
+if (resetStepsBtn) {
+    resetStepsBtn.addEventListener('click', () => {
+        currentSteps = 0;
+        localStorage.setItem('tracker_steps', currentSteps);
+        updateStepTracker(); // Updates the UI and progress bar
+    });
+}
 
     // Filter Buttons Handlers
     filterButtons.forEach(btn => {
