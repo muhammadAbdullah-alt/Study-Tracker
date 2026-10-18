@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interactive Task & Study Tracker</title>
+</head>
+<body class="bg-slate-950 text-slate-100 min-h-screen font-sans antialiased">
+
+    <!-- App Container -->
+    <div class="max-w-6xl mx-auto px-4 py-8">
+        
+        <!-- Header -->
+        <header class="flex flex-col md:flex-row justify-between items-center mb-8 pb-6 border-b border-slate-800">
+            <div>
+                <h1 class="text-3xl font-extrabold tracking-tight bg-gradient-to-r from-blue-400 to-indigo-500 bg-clip-text text-transparent">
+                    Study & Task Tracker
+                </h1>
+                <p class="text-slate-400 text-sm mt-1">Manage your academic goals, daily tasks, and custom fitness targets.</p>
+            </div>
+            <div id="live-clock" class="mt-4 md:mt-0 text-sm font-medium bg-slate-900 px-4 py-2 rounded-xl border border-slate-800 text-indigo-400">
+                <!-- Clock injected via JS -->
+            </div>
+        </header>
+
+        <!-- Main Grid Layout -->
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            
+            <!-- Left Column: Task & Step Inputs -->
+            <div class="lg:col-span-1 space-y-6">
+                
+                <!-- Add Task Card -->
+                <div class="bg-slate-900 p-6 rounded-2xl border border-slate-800 shadow-xl">
+                    <h2 class="text-lg font-semibold mb-4 flex items-center gap-2">
+                        <span>📝</span> Add New Task
+                    </h2>
+                    <form id="task-form" class="space-y-4">
+                        <div>
+                            <label class="block text-xs font-medium text-slate-400 mb-1">Task Title</label>
+                            <input type="text" id="task-title" required placeholder="e.g., Review C++ pointers" 
+                                class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-indigo-500 text-slate-100">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-medium text-slate-400 mb-1">Category</label>
+                            <select id="task-category" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-indigo-500 text-slate-100">
+                                <option value="Study">Study / Academics</option>
+                                <option value="Programming">Programming</option>
+                                <option value="Fitness">Fitness / Health</option>
+                                <option value="Personal">Personal</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-medium text-slate-400 mb-1">Priority</label>
+                            <select id="task-priority" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-indigo-500 text-slate-100">
+                                <option value="High">High</option>
+                                <option value="Medium" selected>Medium</option>
+                                <option value="Low">Low</option>
+                            </select>
+                        </div>
+                        <button type="submit" class="w-full bg-indigo-600 hover:bg-indigo-500 transition-colors font-medium text-sm py-2.5 rounded-xl shadow-lg shadow-indigo-600/20">
+                            Add Task
+                        </button>
+                    </form>
+                </div>
+
+                <!-- Daily Fitness / User-Defined Step Tracker Card -->
+                <div class="bg-slate-900 p-6 rounded-2xl border border-slate-800 shadow-xl">
+                    <div class="flex justify-between items-center mb-4">
+                        <h2 class="text-lg font-semibold flex items-center gap-2">
+                            <span>👟</span> Step Tracker
+                        </h2>
+                        <button id="edit-goal-btn" class="text-xs text-indigo-400 hover:text-indigo-300 underline font-medium">
+                            Set Goal
+                        </button>
+                    </div>
+
+                    <!-- Hidden Goal Input Form -->
+                  <div id="goal-container" class="hidden mb-4 p-3 bg-slate-950 rounded-xl border border-slate-800 gap-2">
+                        <input type="number" id="goal-input" placeholder="New target (e.g. 8000)" 
+                            class="w-full bg-slate-900 border border-slate-800 rounded-lg px-3 py-1.5 text-xs focus:outline-none focus:border-indigo-500 text-slate-100">
+                        <button id="save-goal-btn" class="bg-indigo-600 hover:bg-indigo-500 px-3 py-1.5 rounded-lg text-xs font-medium whitespace-nowrap">
+                            Save
+                        </button>
+                    </div>
+
+                    <div class="space-y-4">
+                        <div>
+                            <div class="flex justify-between text-sm mb-1">
+                                <span class="text-slate-400">Progress</span>
+                                <span id="step-count-display" class="font-medium text-indigo-400">0 / 10,000</span>
+                            </div>
+                            <!-- Progress Bar -->
+                            <div class="w-full bg-slate-950 h-3 rounded-full overflow-hidden border border-slate-800">
+                                <div id="step-progress-bar" class="bg-gradient-to-r from-blue-500 to-indigo-500 h-full w-0 transition-all duration-500"></div>
+                            </div>
+                        </div>
+                        <div class="flex gap-2">
+                            <input type="number" id="step-input" placeholder="Add steps..." 
+                                class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-sm focus:outline-none focus:border-indigo-500 text-slate-100">
+                            <button id="add-steps-btn" class="bg-slate-800 hover:bg-slate-700 transition-colors px-4 py-2 rounded-xl text-sm font-medium">
+                                Log
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Right Column: Task Lists & Stats -->
+            <div class="lg:col-span-2 space-y-6">
+                
+                <!-- Stats Overview Bar -->
+                <div class="grid grid-cols-3 gap-4">
+                    <div class="bg-slate-900 p-4 rounded-2xl border border-slate-800 text-center">
+                        <span class="block text-2xl font-bold text-indigo-400" id="stat-total">0</span>
+                        <span class="text-xs text-slate-400 uppercase tracking-wider font-semibold">Total Tasks</span>
+                    </div>
+                    <div class="bg-slate-900 p-4 rounded-2xl border border-slate-800 text-center">
+                        <span class="block text-2xl font-bold text-emerald-400" id="stat-completed">0</span>
+                        <span class="text-xs text-slate-400 uppercase tracking-wider font-semibold">Completed</span>
+                    </div>
+                    <div class="bg-slate-900 p-4 rounded-2xl border border-slate-800 text-center">
+                        <span class="block text-2xl font-bold text-amber-400" id="stat-pending">0</span>
+                        <span class="text-xs text-slate-400 uppercase tracking-wider font-semibold">Pending</span>
+                    </div>
+                </div>
+
+                <!-- Task Filter & Management -->
+                <div class="bg-slate-900 p-6 rounded-2xl border border-slate-800 shadow-xl">
+                    <div class="flex flex-col sm:flex-row justify-between items-center gap-4 mb-6">
+                        <h2 class="text-lg font-semibold">Task List</h2>
+                        <!-- Filters -->
+                        <div class="flex flex-wrap gap-2 w-full sm:w-auto">
+                            <button data-filter="all" class="filter-btn px-3 py-1.5 rounded-lg text-xs font-medium bg-indigo-600 text-white transition-colors">All</button>
+                            <button data-filter="Study" class="filter-btn px-3 py-1.5 rounded-lg text-xs font-medium bg-slate-800 text-slate-300 hover:bg-slate-700 transition-colors">Study</button>
+                            <button data-filter="Programming" class="filter-btn px-3 py-1.5 rounded-lg text-xs font-medium bg-slate-800 text-slate-300 hover:bg-slate-700 transition-colors">Code</button>
+                            <button data-filter="Fitness" class="filter-btn px-3 py-1.5 rounded-lg text-xs font-medium bg-slate-800 text-slate-300 hover:bg-slate-700 transition-colors">Fitness</button>
+                            <button data-filter="Personal" class="filter-btn px-3 py-1.5 rounded-lg text-xs font-medium bg-slate-800 text-slate-300 hover:bg-slate-700 transition-colors">Personal</button>
+                        </div>
+                    </div>
+
+                    <!-- Task Items Container -->
+                    <div id="task-list" class="space-y-3 max-h-[400px] overflow-y-auto pr-1">
+                        <!-- Dynamically populated via JS -->
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- Vite Entry Point Script -->
+    <script type="module" src="/src/main.js"></script>
+</body>
+</html>
