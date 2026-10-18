@@ -66,13 +66,14 @@
 
                 <!-- Daily Fitness / User-Defined Step Tracker Card -->
                 <div class="bg-slate-900 p-6 rounded-2xl border border-slate-800 shadow-xl">
-                    <div class="flex justify-between items-center mb-4">
-                        <h2 class="text-lg font-semibold flex items-center gap-2">
+                    <div class="flex items-center justify-between mb-2">
+                        <div class="flex items-center gap-2 text-slate-200 font-semibold text-sm">
                             <span>👟</span> Step Tracker
-                        </h2>
-                        <button id="edit-goal-btn" class="text-xs text-indigo-400 hover:text-indigo-300 underline font-medium">
-                            Set Goal
-                        </button>
+                        </div>
+                        <div class="flex items-center gap-3 text-xs">
+                            <button id="reset-steps-btn" class="text-slate-400 hover:text-red-400       transition-colors">Reset</button>
+                            <button id="set-goal-btn" class="text-indigo-400 hover:text-indigo-300 transition-colors">Set Goal</button>
+                        </div>
                     </div>
 
                     <!-- Hidden Goal Input Form -->
