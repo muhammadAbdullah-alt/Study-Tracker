@@ -50,85 +50,95 @@ function startClock() {
 // Event Listeners setup
 function setupEventListeners() {
     // Add Task Handler
-    taskForm.addEventListener('submit', (e) => {
-        e.preventDefault();
-        const title = taskTitleInput.value.trim();
-        if (!title) return;
+    if (taskForm && taskTitleInput && taskCategorySelect && taskPrioritySelect) {
+        taskForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const title = taskTitleInput.value.trim();
+            if (!title) return;
 
-        const newTask = {
-            id: Date.now(),
-            title: title,
-            category: taskCategorySelect.value,
-            priority: taskPrioritySelect.value,
-            completed: false
-        };
+            const newTask = {
+                id: Date.now(),
+                title: title,
+                category: taskCategorySelect.value,
+                priority: taskPrioritySelect.value,
+                completed: false
+            };
 
-        tasks.push(newTask);
-        saveAndRender();
-        taskForm.reset();
-    });
+            tasks.push(newTask);
+            saveAndRender();
+            taskForm.reset();
+        });
+    }
 
     // Step Tracker Goal Toggles
-editGoalBtn.addEventListener('click', () => {
-    goalContainer.classList.toggle('hidden');
-    // Toggle flex class dynamically when shown
-    if(!goalContainer.classList.contains('hidden')) {
-        goalContainer.classList.add('flex');
-        goalInput.value = maxSteps;
-        goalInput.focus();
-    } else {
-        goalContainer.classList.remove('flex');
+    if (editGoalBtn && goalContainer && goalInput) {
+        editGoalBtn.addEventListener('click', () => {
+            goalContainer.classList.toggle('hidden');
+            if(!goalContainer.classList.contains('hidden')) {
+                goalContainer.classList.add('flex');
+                goalInput.value = maxSteps;
+                goalInput.focus();
+            } else {
+                goalContainer.classList.remove('flex');
+            }
+        });
     }
-});
 
-
-saveGoalBtn.addEventListener('click', () => {
-    const newGoal = parseInt(goalInput.value);
-    if (!isNaN(newGoal) && newGoal > 0) {
-        maxSteps = newGoal;
-        localStorage.setItem('tracker_max_steps', maxSteps);
-        updateStepTracker();
-        goalContainer.classList.add('hidden');
-        goalContainer.classList.remove('flex');
+    if (saveGoalBtn && goalContainer && goalInput) {
+        saveGoalBtn.addEventListener('click', () => {
+            const newGoal = parseInt(goalInput.value);
+            if (!isNaN(newGoal) && newGoal > 0) {
+                maxSteps = newGoal;
+                localStorage.setItem('tracker_max_steps', maxSteps);
+                updateStepTracker();
+                goalContainer.classList.add('hidden');
+                goalContainer.classList.remove('flex');
+            }
+        });
     }
-});
 
     // Add Steps Handler
-    addStepsBtn.addEventListener('click', () => {
-        const stepsVal = parseInt(stepInput.value);
-        if (isNaN(stepsVal) || stepsVal <= 0) return;
+    if (addStepsBtn && stepInput) {
+        addStepsBtn.addEventListener('click', () => {
+            const stepsVal = parseInt(stepInput.value);
+            if (isNaN(stepsVal) || stepsVal <= 0) return;
 
-        currentSteps += stepsVal;
-        localStorage.setItem('tracker_steps', currentSteps);
-        stepInput.value = '';
-        updateStepTracker();
-    });
+            currentSteps += stepsVal;
+            localStorage.setItem('tracker_steps', currentSteps);
+            stepInput.value = '';
+            updateStepTracker();
+        });
+    }
+
     // Reset Step Tracker Handler
-const resetStepsBtn = document.getElementById('reset-steps-btn');
-if (resetStepsBtn) {
-    resetStepsBtn.addEventListener('click', () => {
-        currentSteps = 0;
-        localStorage.setItem('tracker_steps', currentSteps);
-        updateStepTracker(); // Updates the UI and progress bar
-    });
-}
+    const resetStepsBtn = document.getElementById('reset-steps-btn');
+    if (resetStepsBtn) {
+        resetStepsBtn.addEventListener('click', () => {
+            currentSteps = 0;
+            localStorage.setItem('tracker_steps', currentSteps);
+            if (typeof updateStepTracker === 'function') {
+                updateStepTracker();
+            }
+        });
+    }
 
     // Filter Buttons Handlers
-    filterButtons.forEach(btn => {
-        btn.addEventListener('click', () => {
-            filterButtons.forEach(b => {
-                b.classList.remove('bg-indigo-600', 'text-white');
-                b.classList.add('bg-slate-800', 'text-slate-300');
+    if (filterButtons && filterButtons.length > 0) {
+        filterButtons.forEach(btn => {
+            btn.addEventListener('click', () => {
+                filterButtons.forEach(b => {
+                    b.classList.remove('bg-indigo-600', 'text-white');
+                    b.classList.add('bg-slate-800', 'text-slate-300');
+                });
+                btn.classList.remove('bg-slate-800', 'text-slate-300');
+                btn.classList.add('bg-indigo-600', 'text-white');
+
+                currentFilter = btn.getAttribute('data-filter');
+                renderTasks();
             });
-            btn.classList.remove('bg-slate-800', 'text-slate-300');
-            btn.classList.add('bg-indigo-600', 'text-white');
-
-            currentFilter = btn.getAttribute('data-filter');
-            renderTasks();
         });
-    });
+    }
 }
-
 // Global actions exposed for inline HTML event handlers
 window.toggleTask = function(id) {
     tasks = tasks.map(task => task.id === id ? { ...task, completed: !task.completed } : task);
